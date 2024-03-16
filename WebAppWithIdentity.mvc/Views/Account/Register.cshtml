@@ -1,0 +1,64 @@
+﻿@using WebAppWithIdentity.mvc.ViewModels
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model RegisterAppUser
+<div class="container d-flex">
+    <form method="post" asp-action="Register" asp-controller="Account" enctype="multipart/form-data" class="form-data">
+        <h1 class="display-6">Register</h1>
+        <div class="form-group">
+            <label asp-for="FullName">Full Name</label>
+            <input asp-for="FullName" placeholder="Julian Rodriguez" />
+        </div>
+        <div class="form-group">
+            <label asp-for="UserName">Username</label>
+            <input asp-for="UserName" placeholder="Julian29"/>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email">Email</label>
+            <input asp-for="Email" type="email" placeholder="example@gmail.com"/>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password">Password</label>
+            <input asp-for="Password" type="password" placeholder="*******" />
+        </div>
+        <div class="form-group-image"">
+            <label asp-for="ImageAccount">Account Image</label>
+            <input asp-for="ImageAccount" type="file"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </form>
+</div>
+<style>
+    .container
+    {
+        justify-content:center;
+    }
+    .form-data
+    {
+        display:flex;
+        flex-flow:column nowrap;
+        align-items:center;
+        gap:1rem;
+        padding:2rem;
+        border:1px solid black;
+        border-radius:1rem;
+    }
+    .form-group
+    {
+        display:flex;
+        flex-flow:row nowrap;
+        gap:1rem;
+        justify-content:space-between;
+        width:100%;
+    }
+    .form-group-image
+    {
+        display:flex;
+        flex-flow:column nowrap;
+        width:100%;
+        gap:1rem;
+    }
+</style>

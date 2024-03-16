@@ -1,0 +1,67 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<AppUser>
+
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Full Name
+                </th>
+                <th>
+                    Image
+                </th>
+                <th>
+                    Id Identity User
+                </th>
+                <th>
+                    Username
+                </th>
+                <th>
+                    Password Hash
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+           @foreach(AppUser user in Model)
+        {
+            <tr>
+                <td>
+                    @user.Id
+                </td>
+                <td>
+                    @user.FullName
+                </td>
+                <td>
+                    <img src="@user.ImageAccount" width="120px"/>
+                </td>
+                <td>
+                    @user.IdIdentityUser
+                </td>
+                <td>
+                    @user.IdentityUser.UserName
+                </td>
+                <td>
+                    @user.IdentityUser.PasswordHash
+                </td>
+            </tr>    
+        }
+        </tbody>
+    </table>
+
+    <!--
+    [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+    public string FullName { get; set; }
+    public string? Address { get; set; }
+    public string? ImageAccount { get; set; }
+    public string IdIdentityUser { get; set; }
+    [ForeignKey("IdIdentityUser")]
+    public IdentityUser IdentityUser { get; set; }
+    -->
