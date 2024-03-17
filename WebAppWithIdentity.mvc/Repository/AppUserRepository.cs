@@ -42,6 +42,12 @@ namespace WebAppWithIdentity.mvc.Repository
             return userResult;
         }
 
+        public async Task<AppUser> GetByIdIdentityUser(string idIdentityUser)
+        {
+            var userResult = await _context.AppUsers.FirstOrDefaultAsync(appUser => appUser.IdIdentityUser == idIdentityUser);
+            return userResult;
+        }
+
         public async Task<bool> Save()
         {
             var resultSaved = await _context.SaveChangesAsync();

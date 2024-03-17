@@ -6,7 +6,7 @@
 }
 @model LoginAppUser
 <div class="container d-flex">
-    <form enctype="multipart/form-data" class="form-data">
+    <form enctype="multipart/form-data" class="form-data" method="post" asp-action="Login">
         <h1 class="display-6">Login</h1>
         <div class="form-group">
             <label asp-for="Email">Email</label>
@@ -16,7 +16,7 @@
             <label asp-for="Password">Password</label>
             <input asp-for="Password" type="password" placeholder="*******" />
         </div>
-        <button type="submit" class="btn btn-primary">Sign Up</button>
+        <button type="submit" class="btn btn-primary">Log in</button>
     </form>
 </div>
 <style>

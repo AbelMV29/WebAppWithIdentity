@@ -1,8 +1,32 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using WebAppWithIdentity.mvc.Interfaces
+@{
     ViewData["Title"] = "Home Page";
 }
-
+@inject UserManager<IdentityUser> _userManager;
+@inject IAppUserRepository _appUserRepository;
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+@if(User.Identity.IsAuthenticated)
+{
+    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+    var appUser = await _appUserRepository.GetByIdIdentityUser(user.Id);
+    if(User.IsInRole("User"))
+    {
+        <h2 class="text-success">@user.UserName</h2>
+        <h4 class="text-primary">Hi @appUser.FullName, your role is User!</h4>
+        <img src="@appUser.ImageAccount" width="200px"/>
+        <br />
+        <a class="text-danger" href="">Edit your Address</a>
+    }
+    else if(User.IsInRole("Admin"))
+    {
+        <h4 class="text-secondary"> Hi @user.UserName, your role is Admin</h4>
+    }
+}
+else
+{
+    <h4 class="text-danger">You are not authenticated</h4>
+}

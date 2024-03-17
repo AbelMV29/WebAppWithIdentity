@@ -37,6 +37,13 @@ namespace WebAppWithIdentity.mvc
 
             builder.Services.AddTransient<UserManager<IdentityUser>>();
             builder.Services.AddTransient<RoleManager<IdentityRole>>();
+            builder.Services.AddTransient<SignInManager<IdentityUser>>();
+
+            builder.Services.AddAuthorization(op =>
+            {
+                op.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                op.AddPolicy("User", policy => policy.RequireRole("User"));
+            });
 
             var app = builder.Build();
 

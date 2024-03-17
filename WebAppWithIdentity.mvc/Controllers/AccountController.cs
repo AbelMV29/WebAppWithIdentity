@@ -10,15 +10,18 @@ namespace WebAppWithIdentity.mvc.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;    
         private readonly IAppUserRepository _appUserRepository;
         private IPhotoService _photoService;
         private RoleManager<IdentityRole> _roleManager;
-        public AccountController(UserManager<IdentityUser> userManager,IAppUserRepository appUserRepository, IPhotoService photoService, RoleManager<IdentityRole> roleManager)
+        public AccountController(UserManager<IdentityUser> userManager,IAppUserRepository appUserRepository
+            , IPhotoService photoService, RoleManager<IdentityRole> roleManager,SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _appUserRepository = appUserRepository;
             _photoService = photoService;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
         public async Task<IActionResult> Index()
         {
@@ -39,6 +42,10 @@ namespace WebAppWithIdentity.mvc.Controllers
         [HttpGet]
         public async Task<IActionResult> Register()
         {
+            if(User.Identity.IsAuthenticated)
+            {
+                return View("Works");
+            }
             return View();
         }
         [HttpPost]
@@ -46,7 +53,7 @@ namespace WebAppWithIdentity.mvc.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return View(ModelState);
+                return View(registerAppUser);
             }
 
             var userIdentity = new IdentityUser
@@ -56,7 +63,6 @@ namespace WebAppWithIdentity.mvc.Controllers
             };
 
             var resultCreateIdentity = await _userManager.CreateAsync(userIdentity, registerAppUser.Password);
-
             if (resultCreateIdentity.Succeeded)
             {
                 await _userManager.AddToRoleAsync(userIdentity, "User");
@@ -88,5 +94,35 @@ namespace WebAppWithIdentity.mvc.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginAppUser loginAppUser)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(loginAppUser);
+            }
+            var userIdentity = await _userManager.FindByEmailAsync(loginAppUser.Email);
+            if(userIdentity is null)
+            {
+                return View(loginAppUser);
+            }
+            var resultTrySignInWithPassword = await _signInManager.PasswordSignInAsync(userIdentity, loginAppUser.Password, false, false);
+            if (resultTrySignInWithPassword.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View(loginAppUser);
+        }
+
+        public async Task<IActionResult> LogOut(IdentityUser identityUser)
+        {
+            if (identityUser is null)
+            {
+                return View("Account/Register");
+            }
+             await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }
