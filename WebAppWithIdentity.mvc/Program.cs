@@ -1,5 +1,8 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using WebAppWithIdentity.mvc.Data;
 using WebAppWithIdentity.mvc.Helpers;
 using WebAppWithIdentity.mvc.Interfaces;
@@ -19,8 +22,11 @@ namespace WebAppWithIdentity.mvc
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
             builder.Services.AddScoped<IPhotoService, PhotoService>();
-            
 
+            //Add Manager ASP.NET Identity to my services
+            builder.Services.AddTransient<UserManager<IdentityUser>>();
+            builder.Services.AddTransient<RoleManager<IdentityRole>>();
+            builder.Services.AddTransient<SignInManager<IdentityUser>>();
 
             //Add mi Database and bind the connectionString
             builder.Services.AddDbContext<DefaultDb>(op =>
@@ -35,27 +41,25 @@ namespace WebAppWithIdentity.mvc
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<DefaultDb>();
 
-            builder.Services.AddTransient<UserManager<IdentityUser>>();
-            builder.Services.AddTransient<RoleManager<IdentityRole>>();
-            builder.Services.AddTransient<SignInManager<IdentityUser>>();
+            //Add validation of FluentValidation
+
+            
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                            .AddCookie();
 
             builder.Services.AddAuthorization(op =>
             {
+
                 op.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
                 op.AddPolicy("User", policy => policy.RequireRole("User"));
             });
-
             var app = builder.Build();
-
-            if(args.Length > 0 && args[0] == "seed")
-            {
-
-            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -64,6 +68,7 @@ namespace WebAppWithIdentity.mvc
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

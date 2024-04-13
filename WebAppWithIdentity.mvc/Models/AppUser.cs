@@ -10,7 +10,9 @@ namespace WebAppWithIdentity.mvc.Models
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string FullName { get; set; }
-        public string? Address { get; set; }
+        public int? IdAddress { get; set; }
+        [ForeignKey("IdAddress")]
+        public Address? Address {  get; set; }     
         public string? ImageAccount { get; set; }
         public string IdIdentityUser { get; set; }
         [ForeignKey("IdIdentityUser")]

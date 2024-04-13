@@ -1,5 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using WebAppWithIdentity.mvc.Extension
+@using WebAppWithIdentity.mvc.Interfaces
 @inject UserManager<IdentityUser> _userManager;
+@inject IAppUserRepository appUserRepository;
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +32,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        @if(!User.Identity.IsAuthenticated)
+                        
+                        
+                    </ul>
+                    <ul class="navbar-nav flex-grow-1 gap-3 justify-content-end">
+                        
+                        @if (!User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <a class="btn btn-outline-success" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
@@ -38,11 +48,16 @@
                         }
                         else
                         {
+                            var currentAppUser = await appUserRepository.GetByIdIdentityUser(User.GetIdActualIdentityUser());
                             <li class="nav-item">
-                                <a class="btn btn-success" asp-area="" asp-controller="Account" asp-action="LogOut">LogOut</a>
+                                <a asp-action="Edit" asp-controller="AppUser" asp-route-id="@currentAppUser.Id" class="btn btn-success">Edit Porfile</a>
+                                <img src="@currentAppUser.ImageAccount" class="rounded-circle" width="40em" />
                             </li>
+                            <li class="nav-item">
+                                <a asp-action="Logout" asp-controller="Account" class="btn btn-danger">Log Out</a>
+                            </li>
+                            
                         }
-                        
                     </ul>
                 </div>
             </div>

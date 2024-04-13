@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using WebAppWithIdentity.mvc.Data;
 using WebAppWithIdentity.mvc.Interfaces;
 using WebAppWithIdentity.mvc.Models;
@@ -44,10 +45,9 @@ namespace WebAppWithIdentity.mvc.Repository
 
         public async Task<AppUser> GetByIdIdentityUser(string idIdentityUser)
         {
-            var userResult = await _context.AppUsers.FirstOrDefaultAsync(appUser => appUser.IdIdentityUser == idIdentityUser);
+            var userResult = await _context.AppUsers.Include(appUser=>appUser.Address).FirstOrDefaultAsync(appUser => appUser.IdIdentityUser == idIdentityUser);
             return userResult;
         }
-
         public async Task<bool> Save()
         {
             var resultSaved = await _context.SaveChangesAsync();

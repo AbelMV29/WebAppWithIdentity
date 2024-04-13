@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAppWithIdentity.mvc.Data;
 
@@ -11,9 +12,11 @@ using WebAppWithIdentity.mvc.Data;
 namespace WebAppWithIdentity.mvc.Migrations
 {
     [DbContext(typeof(DefaultDb))]
-    partial class DefaultDbModelSnapshot : ModelSnapshot
+    [Migration("20240319210741_AddAddress")]
+    partial class AddAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,7 +241,7 @@ namespace WebAppWithIdentity.mvc.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("WebAppWithIdentity.mvc.Models.AppUser", b =>
@@ -269,7 +272,7 @@ namespace WebAppWithIdentity.mvc.Migrations
 
                     b.HasIndex("IdIdentityUser");
 
-                    b.ToTable("AppUsers", (string)null);
+                    b.ToTable("AppUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

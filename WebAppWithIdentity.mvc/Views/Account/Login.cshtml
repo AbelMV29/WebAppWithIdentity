@@ -8,14 +8,22 @@
 <div class="container d-flex">
     <form enctype="multipart/form-data" class="form-data" method="post" asp-action="Login">
         <h1 class="display-6">Login</h1>
+        <span asp-validation-for="Email" class="text-danger"></span>
         <div class="form-group">
             <label asp-for="Email">Email</label>
-            <input asp-for="Email" type="email" placeholder="example@gmail.com"/>
+            <input asp-for="Email" placeholder="example@gmail.com"/>
         </div>
+        <span class="text-danger" asp-validation-for="Password"></span>
         <div class="form-group">
             <label asp-for="Password">Password</label>
             <input asp-for="Password" type="password" placeholder="*******" />
         </div>
+        @if(TempData["Error"] is not null)
+        {
+            <div class="alert alert-danger">
+                <span>@TempData["Error"]</span>
+            </div>
+        }
         <button type="submit" class="btn btn-primary">Log in</button>
     </form>
 </div>
@@ -27,7 +35,6 @@
     .form-data {
         display: flex;
         flex-flow: column nowrap;
-        align-items: center;
         gap: 1rem;
         padding: 2rem;
         border: 1px solid black;

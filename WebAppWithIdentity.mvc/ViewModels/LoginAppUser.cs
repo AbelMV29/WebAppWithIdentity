@@ -5,9 +5,9 @@ namespace WebAppWithIdentity.mvc.ViewModels
 {
     public class LoginAppUser
     {
-        [Required,EmailAddress]
+        [Required(ErrorMessage = "Email is required"),EmailAddress(ErrorMessage ="Email is of type incorrect")]
         public string Email { get; set; }
-        [Required,PasswordPropertyText]
+        [Required(ErrorMessage ="Password is required")]
         public string Password { get; set; }
     }
 }

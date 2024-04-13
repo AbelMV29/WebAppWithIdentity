@@ -5,15 +5,15 @@ namespace WebAppWithIdentity.mvc.ViewModels
 {
     public class RegisterAppUser
     {
-        [Required]
+        [Required(ErrorMessage ="The full name is required")]
         public string FullName { get; set; }
-        [Required]
+        [Required(ErrorMessage ="The username is required")]
         public string UserName { get; set; }
-        [Required,EmailAddress]
+        [Required(ErrorMessage ="The email is required"),EmailAddress(ErrorMessage ="The email type that you sends is incorrect")]
         public string Email { get; set; }
-        [Required,PasswordPropertyText]
+        [Required(ErrorMessage ="The password is required"),PasswordPropertyText]
         public string Password { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Image account is required")]
         public IFormFile ImageAccount { get; set; }
     }
 }

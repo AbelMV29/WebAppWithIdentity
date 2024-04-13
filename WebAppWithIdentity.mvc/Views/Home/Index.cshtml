@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 @using WebAppWithIdentity.mvc.Interfaces
+@using WebAppWithIdentity.mvc.Extension
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -9,21 +11,27 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
-@if(User.Identity.IsAuthenticated)
+@if(User.Identity.IsAuthenticated) 
 {
-    var user = await _userManager.FindByNameAsync(User.Identity.Name);
-    var appUser = await _appUserRepository.GetByIdIdentityUser(user.Id);
+    var appUser = await _appUserRepository.GetByIdIdentityUser(User.GetIdActualIdentityUser());
     if(User.IsInRole("User"))
     {
-        <h2 class="text-success">@user.UserName</h2>
+        <h2 class="text-success">@User.GetUserNameActualIdentityUser()</h2>
         <h4 class="text-primary">Hi @appUser.FullName, your role is User!</h4>
         <img src="@appUser.ImageAccount" width="200px"/>
         <br />
-        <a class="text-danger" href="">Edit your Address</a>
+        <h6>Tu direccion</h6>
+        if(appUser.Address is not null)
+        {
+            <span class="text-danger">@appUser.Address.Calle <strong>@appUser.Address.Altura</strong></span>
+        }else
+        {
+            <span class="text-primary">You dont have an address vinculated <a class="" href=""><strong>Add Address</strong></a></span>
+        }
     }
     else if(User.IsInRole("Admin"))
     {
-        <h4 class="text-secondary"> Hi @user.UserName, your role is Admin</h4>
+        <h4 class="text-secondary"> Hi @User.GetUserNameActualIdentityUser(), your role is Admin</h4>
     }
 }
 else

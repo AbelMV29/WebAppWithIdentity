@@ -49,13 +49,18 @@ namespace WebAppWithIdentity.mvc.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterAppUser registerAppUser)
+        public async Task<ActionResult> Register(RegisterAppUser registerAppUser)
         {
-            if(!ModelState.IsValid)
+            if(!(ModelState.IsValid))
             {
                 return View(registerAppUser);
             }
-
+            var userAlreadyExists = await _userManager.FindByEmailAsync(registerAppUser.Email);
+            if(userAlreadyExists is not null)
+            {
+                TempData["Error"] = "The email is already in use";
+                return View(registerAppUser);
+            }
             var userIdentity = new IdentityUser
             {
                 UserName = registerAppUser.UserName,
@@ -65,7 +70,7 @@ namespace WebAppWithIdentity.mvc.Controllers
             var resultCreateIdentity = await _userManager.CreateAsync(userIdentity, registerAppUser.Password);
             if (resultCreateIdentity.Succeeded)
             {
-                await _userManager.AddToRoleAsync(userIdentity, "User");
+                await _userManager.AddToRoleAsync(userIdentity, "Admin");
                 var resultAddImageCloud = await _photoService.AddPhotoAsync(registerAppUser.ImageAccount);
                 AppUser appUser = new AppUser
                 {
@@ -79,14 +84,16 @@ namespace WebAppWithIdentity.mvc.Controllers
 
                 if (!resultOfAddUser)
                 {
-                    return View("", "Error to Add AppUser In Database");
+                    TempData["Error"] = "Error to save the appuser account";
+                    return View();
                 }
 
                 return View("Works");
             }
             else
             {
-                return View("", "Error to create an IdentityUser");
+                TempData["Error"] = "Error to create an account";
+                return View();
             }
         }
 
@@ -102,8 +109,9 @@ namespace WebAppWithIdentity.mvc.Controllers
                 return View(loginAppUser);
             }
             var userIdentity = await _userManager.FindByEmailAsync(loginAppUser.Email);
-            if(userIdentity is null)
+            if(userIdentity is null || !(await _userManager.CheckPasswordAsync(userIdentity,loginAppUser.Password)))
             {
+                TempData["Error"] = "Email or Password incorrect";
                 return View(loginAppUser);
             }
             var resultTrySignInWithPassword = await _signInManager.PasswordSignInAsync(userIdentity, loginAppUser.Password, false, false);
@@ -111,6 +119,7 @@ namespace WebAppWithIdentity.mvc.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            TempData["Error"] = "Error to login";
             return View(loginAppUser);
         }
 
